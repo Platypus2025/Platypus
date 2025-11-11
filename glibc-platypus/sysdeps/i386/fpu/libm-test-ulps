@@ -1,0 +1,12 @@
+# sysdeps/i386/fpu/s_cbrtf.S is not correctly rounded
+Function: "cbrt":
+float: 1
+
+Function: "cbrt_downward":
+float: 1
+
+Function: "cbrt_towardzero":
+float: 1
+
+Function: "cbrt_upward":
+float: 1
