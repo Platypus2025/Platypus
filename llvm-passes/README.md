@@ -17,6 +17,6 @@ make -j$(nproc)
 The corresponding pass library has been built and is ready for use.
 
 
-> ⚠️ **Warning**  
+> [!WARNING]  
 > The `BitMasks` pass requires updating the path to `dso_callbacks.cpp` in the `BitMasks.cpp` file (see its included headers).  
 > This also requires recompiling the pass each time `dso_callbacks.cpp` is modified.
