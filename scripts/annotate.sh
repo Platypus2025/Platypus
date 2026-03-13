@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change this to the path to your python annotator script
-PYTHON_ANNOTATOR="/path/to/repo/scripts/annotated.py"
+PYTHON_ANNOTATOR="${ROOT_DIR}/scripts/annotation.py"
 JSON_FILE="compile_commands.json"
 
 OUTFILE="$1"
