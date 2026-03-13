@@ -1,0 +1,4 @@
+makecontext:(1)
+pthread_create:(2)
+__cxa_atexit:(0)
+dladdr:(0)
