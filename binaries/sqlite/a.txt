@@ -1,0 +1,4 @@
+__cxa_atexit:(0)
+rl_completion_matches:(1)
+pthread_create:(2)
+qsort:(3)

@@ -1,0 +1,3 @@
+qsort:(3)
+pthread_create:(2)
+__cxa_atexit:(0)
