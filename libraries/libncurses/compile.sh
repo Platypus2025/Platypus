@@ -143,6 +143,7 @@ python3 "$SCRIPT_1" \
   sym_ncurses.log \
   > output_ncurses.txt
 
-cp lib/libncurses.so.6.3 ../../instrumented_libs 
+cp lib/libncurses.so.6.3 ../../instrumented_libs
+ln -sf libncurses.so.6.3 ../../instrumented_libs/libncurses.so.6 
 
 python3 "$SCRIPT_2" output_ncurses.txt header_ncurses.txt

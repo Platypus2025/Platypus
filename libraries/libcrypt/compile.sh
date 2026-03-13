@@ -142,6 +142,7 @@ python3 "$SCRIPT_1" \
   > output.txt
 
 cp .libs/libcrypt.so.1.1.0 ../../instrumented_libs
+ln -sf libcrypt.so.1.1.0 ../../instrumented_libs/libcrypt.so.1
 
 SCRIPT_2="${ROOT_DIR}/scripts/parse_output.py"
 

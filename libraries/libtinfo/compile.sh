@@ -143,6 +143,7 @@ python3 "$SCRIPT_1" \
   sym_tinfo.log \
   > output.txt
 
-cp lib/libtinfo.so.6.3 ../../instrumented_libs  
+cp lib/libtinfo.so.6.3 ../../instrumented_libs
+ln -sf libtinfo.so.6.3 ../../instrumented_libs/libtinfo.so.6
 
 python3 "$SCRIPT_2" output.txt header_tinfo.txt
