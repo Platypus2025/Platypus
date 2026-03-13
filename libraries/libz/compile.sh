@@ -124,6 +124,7 @@ python3 "$SCRIPT_1" \
   > output.txt
 
 cp libz.so.1.3.1 ../../instrumented_libs
+ln -sf libz.so.1.3.1 ../../instrumented_libs/libz.so.1
 
 SCRIPT_2="${ROOT_DIR}/scripts/parse_output.py"
 

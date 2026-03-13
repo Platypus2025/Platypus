@@ -118,6 +118,7 @@ python3 "$SCRIPT_1" \
   > output.txt
 
 cp .libs/libevent-2.1.so.7.0.1 ../../instrumented_libs
+ln -sf libevent-2.1.so.7.0.1 ../../instrumented_libs/libevent-2.1.so.7
 
 SCRIPT_2="${ROOT_DIR}/scripts/parse_output.py"
 

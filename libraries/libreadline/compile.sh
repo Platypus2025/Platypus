@@ -118,7 +118,8 @@ python3 "$SCRIPT_1" \
   sym.log \
   > output.txt
 
-cp shlib/libreadline.so.8.3 ../../instrumented_libs  
+cp shlib/libreadline.so.8.3 ../../instrumented_libs
+ln -sf libreadline.so.8.3 ../../instrumented_libs/libreadline.so.8 
 
 SCRIPT_2="${ROOT_DIR}/scripts/parse_output.py"
 

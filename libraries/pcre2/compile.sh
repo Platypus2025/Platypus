@@ -91,7 +91,7 @@ PROTECT_JMP=True make libpcre2-8.la \
           -O3 \
           -fcf-protection=full \
           -fpass-plugin=${MASK_PLUGIN}" \
-  LDFLAGS="-fuse-ld=lld \
+  LDFLAGS="-fuse-ld=${PLATYPUS_LLD} \
            -rdynamic \
            -Wl,-z,relro,-z,now \
            -Wl,--dynamic-linker=${DYNAMIC_LINKER} \
@@ -117,6 +117,7 @@ python3 "$SCRIPT_1" \
   > output.txt
 
 cp .libs/libpcre2-8.so.0.12.0 ../../instrumented_libs
+ln -sf libpcre2-8.so.0.12.0 ../../instrumented_libs/libpcre2-8.so.0
 
 SCRIPT_2="${ROOT_DIR}/scripts/parse_output.py"
 
