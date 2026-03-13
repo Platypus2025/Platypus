@@ -1,23 +1,30 @@
 cmake_minimum_required(VERSION 3.13.4)
-project(BitMasks)
 
-set(CMAKE_CXX_COMPILER /path/to/llvm-platypus/build/bin/clang++)
-set(CMAKE_C_COMPILER /path/to/llvm-platypus/build/bin/clang-20)
+set(LLVM_ROOT "$ENV{LLVM_ROOT}")
+
+if("${LLVM_ROOT}" STREQUAL "")
+  message(FATAL_ERROR "LLVM_ROOT is not set")
+endif()
+
+set(CMAKE_CXX_COMPILER "${LLVM_ROOT}/build/bin/clang++")
+set(CMAKE_C_COMPILER "${LLVM_ROOT}/build/bin/clang-20")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Uncomment these two lines if you want to pass the LLVM Path
-# set(LT_LLVM_INSTALL_DIR "" CACHE PATH "LLVM installation directory")
-# list(APPEND CMAKE_PREFIX_PATH "${LT_LLVM_INSTALL_DIR}/lib/cmake/llvm/")
+project(BitMasks)
 
+
+set(LLVM_DIR "${LLVM_ROOT}/build/lib/cmake/llvm")
 find_package(LLVM 20.1.0 REQUIRED CONFIG)
 
-# Include directories specified by LLVM in the project's include path
+message(STATUS "Using LLVMConfig.cmake from: ${LLVM_DIR}")
+message(STATUS "LLVM package version: ${LLVM_PACKAGE_VERSION}")
+message(STATUS "C compiler: ${CMAKE_C_COMPILER}")
+message(STATUS "CXX compiler: ${CMAKE_CXX_COMPILER}")
+
 include_directories(${LLVM_INCLUDE_DIRS})
-# Include definitions specified by LLVM in the project's options
 add_definitions(${LLVM_DEFINITIONS})
 link_directories(${LLVM_LIBRARY_DIR})
 
-# Use the same C++ standard as LLVM does
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -27,7 +34,7 @@ if(NOT LLVM_ENABLE_RTTI)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
 endif()
 
-add_library(Bitmask SHARED BitMasks.cpp Helper_Functions.cpp /path/to/llvm-platypus/dso_callbacks.cpp)
+add_library(Bitmask SHARED BitMasks.cpp Helper_Functions.cpp "${LLVM_ROOT}/../dso_callbacks.cpp")
 
 # Link against LLVM libraries
 target_link_libraries(Bitmask ${llvm_libs})

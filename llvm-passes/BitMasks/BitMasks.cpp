@@ -14,7 +14,7 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/IR/InlineAsm.h"
 #include <fstream>
-#include "/path/to/llvm-platypus/dso_callbacks.h"
+#include "../../dso_callbacks.h"
 #include "Helper_Functions.h"
 
 using namespace llvm;
@@ -79,9 +79,9 @@ bool always_callback_table(IRBuilder<> &Builder, CallInst *Call, Value *target, 
     FunctionType *MovR11FTy = FunctionType::get(Builder.getVoidTy(), {Int8PtrTy}, false);
 
     InlineAsm* MovR11Asm = InlineAsm::get(
-        MovR11FTy, 
+        MovR11FTy,
         "movq $0, %r11",
-        "r", 
+        "r",
         /*hasSideEffects=*/true
     );
     Builder.CreateCall(MovR11Asm, {CalleePtr});
@@ -214,7 +214,7 @@ struct BitmasksAddition : public PassInfoMixin<BitmasksAddition> {
 
                 }
             }
-        
+
             for (CallInst *Call : Candidates) {
                 Value *target = Call->getCalledOperand();
 
@@ -247,7 +247,7 @@ struct BitmasksAddition : public PassInfoMixin<BitmasksAddition> {
 
                 GlobalVariable* GV1 = nullptr;
                 if (rtld_glob == 0) {
-                    
+
                     if (auto *LI = dyn_cast<LoadInst>(target)) {
                         Value *ptr = LI->getPointerOperand();
                         GV1 = dyn_cast<GlobalVariable>(ptr->stripPointerCasts());
@@ -259,7 +259,7 @@ struct BitmasksAddition : public PassInfoMixin<BitmasksAddition> {
                 if (iscallback || rtld_glob == 1 || (GV1 && global_names.count(GV1->getName().str()))) {
 
 
-                     std::vector<Type*> ArgTypes; 
+                     std::vector<Type*> ArgTypes;
                     // SmallVector<Value*, 8> Args;
                     for (auto &arg : Call->args()) {
                         ArgTypes.push_back(arg->getType());
@@ -279,9 +279,9 @@ struct BitmasksAddition : public PassInfoMixin<BitmasksAddition> {
                                     "orq or_mask(%rip), $0\n\tandq and_mask(%rip), $0",
                                     "=r,0", true
                                 );
-                    Value *OredPtr = Builder.CreateCall(OrCmpAsm, {CalleePtr});                    
+                    Value *OredPtr = Builder.CreateCall(OrCmpAsm, {CalleePtr});
                     Value *IsZero = Builder.CreateICmpEQ(CalleePtr, OredPtr);
-                    
+
                     FunctionType *FTy = FunctionType::get(Call->getType(), ArgTypes, false);
                     BasicBlock *OrigBlock = Call->getParent();
 
@@ -291,7 +291,7 @@ struct BitmasksAddition : public PassInfoMixin<BitmasksAddition> {
                     BasicBlock *SkipBlock = BasicBlock::Create(M.getContext(), "skipblock", Fun);
 
 
-                                
+
                     IRBuilder<> builder(OrigBlock->getTerminator());
                     //builder.CreateCondBr(IsZero, CallBlock, SkipBlock);
                     BranchInst *Br = builder.CreateCondBr(IsZero, CallBlock, SkipBlock);
@@ -329,7 +329,7 @@ struct BitmasksAddition : public PassInfoMixin<BitmasksAddition> {
 
                     }
                     Call->eraseFromParent();
-                    
+
                     Modified = true;
 
                 } else {
@@ -338,7 +338,7 @@ struct BitmasksAddition : public PassInfoMixin<BitmasksAddition> {
                 }
             }
         }
-            
+
         return Modified ? PreservedAnalyses::none() : PreservedAnalyses::all();
     }
 };

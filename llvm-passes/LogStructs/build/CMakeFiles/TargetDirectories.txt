@@ -1,0 +1,10 @@
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/intrinsics_gen.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/vt_gen.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/omp_gen.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/acc_gen.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/ARMTargetParserTableGen.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/AArch64TargetParserTableGen.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/RISCVTargetParserTableGen.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/Logstructs.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/edit_cache.dir
+/home/chagi/Documents/artifacts/Platypus/llvm-passes/LogStructs/build/CMakeFiles/rebuild_cache.dir

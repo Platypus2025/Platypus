@@ -1,0 +1,1 @@
+/home/chagi/Documents/artifacts/Platypus/llvm-project/build/bin/clang++ -fPIC  -fno-rtti -shared -Wl,-soname,libBitmask.so -o libBitmask.so CMakeFiles/Bitmask.dir/BitMasks.cpp.o CMakeFiles/Bitmask.dir/Helper_Functions.cpp.o CMakeFiles/Bitmask.dir/home/chagi/Documents/artifacts/Platypus/dso_callbacks.cpp.o   -L/home/chagi/Documents/artifacts/Platypus/llvm-project/build/./lib 

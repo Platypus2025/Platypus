@@ -1,0 +1,1 @@
+/home/chagi/Documents/artifacts/Platypus/llvm-project/build/bin/clang++ -fPIC  -fno-rtti -shared -Wl,-soname,libLogstructs.so -o libLogstructs.so CMakeFiles/Logstructs.dir/LogStructs.cpp.o CMakeFiles/Logstructs.dir/Helper_Functions.cpp.o   -L/home/chagi/Documents/artifacts/Platypus/llvm-project/build/./lib 
