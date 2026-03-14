@@ -102,7 +102,7 @@ PROTECT_JMP=True make "${BIN}" \
            -rdynamic \
            -Wl,-z,relro,-z,now \
            -Wl,--dynamic-linker=${DYNAMIC_LINKER} \
-           -Wl,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
+           -Wl,--disable-new-dtags,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
            -Wl,--strip-debug \
            -Wl,--allow-shlib-undefined" \
   -j8
@@ -146,7 +146,7 @@ PROTECT_JMP=True make "${BIN}" \
            -rdynamic \
            -Wl,-z,relro,-z,now \
            -Wl,--dynamic-linker=${DYNAMIC_LINKER} \
-           -Wl,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
+           -Wl,--disable-new-dtags,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
            -Wl,--strip-debug \
            -Wl,--callb_getter=$PWD/../a.txt -Wl,--allow-shlib-undefined -Wl,--no-as-needed ${LIBRARY_PATH_WITH_INSTRUMENTED}/libnss_systemd.so.2 ${LIBRARY_PATH_WITH_INSTRUMENTED}/libnss_sss.so.2 $PWD/mask.o" \
   -j8
@@ -187,7 +187,9 @@ PROTECT_JMP=True make "${BIN}" \
            -rdynamic \
            -Wl,-z,relro,-z,now \
            -Wl,--dynamic-linker=${DYNAMIC_LINKER} \
-           -Wl,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
+           -Wl,--disable-new-dtags,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
            -Wl,--strip-debug \
            -Wl,--callb_getter=$PWD/../a.txt -Wl,--allow-shlib-undefined -Wl,--no-as-needed ${LIBRARY_PATH_WITH_INSTRUMENTED}/libnss_systemd.so.2 ${LIBRARY_PATH_WITH_INSTRUMENTED}/libnss_sss.so.2 $PWD/mask.o" \
   -j8
+
+cp bftpd ../../artifact_binaries_instrumented
