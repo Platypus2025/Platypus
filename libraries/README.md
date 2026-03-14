@@ -2,8 +2,9 @@
 
 First of all, the following should already be built:
 1. The modified Clang compiler
-2. The modified glibc
-3. The 3 llvm passes
+2. The 3 llvm passes
+3. The modified glibc
+
 
 **Important**: Every library should rebuild the `BitMasks` pass for 2 reasons:
 1. The way the pass understands which structs to instrument with the extended masking is by reading a `.cpp` file from a certain place. Every library should update this file (typically called here as `dso_callbacks.cpp`).
@@ -14,9 +15,9 @@ For this reason we provide in every library a copy of the `BitMasks.cpp` with th
 
 
 
-If so compiling a library comes down to the following:
+Then compiling a library comes down to the following:
 
-- Create a `compile.json` file, for example by using `bear` (without Platypus).
+- Create a `compile_commands.json` file, for example by using `bear` (without PlaTypus).
 This is needed in order to avoid annotating files that are definitely not necessary.
 - Execute the `annotate.sh` script inside the directory.
 This scripts annotates the callback getters (CBGs in paper) in the `.c` files used during the compilation.
@@ -27,14 +28,14 @@ An example regarding `libcrypto` is:
     LOGFILE_PATH="$PWD/dynsym_crypto.log" make libcrypto.so CC="${PLATYPUS_CLANG}" CFLAGS="-O3 -g -fPIC -fpass-plugin=${DYNSYM_PLUGIN}" LDFLAGS="-fuse-ld=lld -Wl,--allow-shlib-undefined" -j1
     ```
     `dynsym.log` stores information necessary about the callbacks used by this DSO. This is important later when for a given binary we want to build the callback tables (per DSO).
-    **Notice** that the previous instruction assumes that the `Makefile` enables the compialtion of the given target. If this is not the case then the user should apply the instruction only to the files necessary for the wanted target. Otherwise `dynsym.log` may be characterized by *noise*.
+    **Notice** that the previous instruction assumes that the `Makefile` enables the compilation of the given target. If this is not the case then the user should apply the instruction only to the files necessary for the wanted target. Otherwise `dynsym.log` may be characterized by *noise*.
 - We remove the previously compiled files and apply the second pass `LogStructs`.
     ```bash
     LOGFILE_PATH=$PWD/sym_crypto.log make libcrypto.so CC="${PLATYPUS_CLANG}" CFLAGS="-O3 -g -fpass-plugin=${STRUCT_PLUGIN}" LDFLAGS="-fuse-ld=lld -Wl,--allow-shlib-undefined" -j8
     ```
     This pass logs necessary information regarding structs with callbacks and also about CBGs.
 - After this step it is necessary to extract from the `sym.log` the structs which need to be instrumented.
-This is achieved with the `parse_structs.py`. Note that this script also logs possible global function pointers that need to be instrumented. The result of this script is passed into the `dso_callbacks.cpp`. This is not automated yet, so needs to be made manually. The `dso_callbacks.cpp` has the following layout:
+This is achieved with the `parse_structs.py` script. Note that this script also logs possible global function pointers that need to be instrumented. The result of this script is passed into the `dso_callbacks.cpp`. This is not automated yet, so needs to be made manually. The `dso_callbacks.cpp` has the following layout:
     ```bash
     #pragma once
     #include <unordered_set>
@@ -49,8 +50,8 @@ This is achieved with the `parse_structs.py`. Note that this script also logs po
     extern const std::unordered_set<std::string> global_names = {
     };
     ```
-    In `struct_names` we fill the name of the logged structs, while in the `global_names` the name of the logged function pointers. `dso_callbacks` can be left untouched.
-- We remove the previously compiled files and apply the third pass `BitMasks`.
+    In `struct_names` we fill the name of the logged structs, while in the `global_names` the name of the logged function pointers. `dso_callbacks` can be left untouched. See more in the README of *scripts* folder.
+- We remove the previously compiled files and apply the third pass, `BitMasks`.
 This pass is eventually the one instrumenting the source code with the masking.
     ```bash
     PROTECT_JMP=True \
@@ -72,7 +73,7 @@ This pass is eventually the one instrumenting the source code with the masking.
     -j8
     ```
     `DYNAMIC_LINKER` is the loader of the instrumented glibc. `LD_LLD` is the modified Platypus linker.
-    The linker flag `callb_getter` allows Platypus to instrument the PLT stubs of functions which accept callbacks (see §5: Arguments to CBGs). It can or not be applied depending on the user. We will show later how the file should be created.
+    The linker flag `callb_getter` allows Platypus to instrument the PLT stubs of functions which accept callbacks (see §5: Arguments to CBGs). It can or cannot be applied depending on the user. We will show later how the file should be created.
     `masks_crypto.h` is just a header file declaring the 2 bitmask relocations plus an exported symbol (here `CRYPTO`) that should point to the start address of the DSO. This is achieved during linking. For example in libcrypto:
     ```bash
     ➜  openssl-3.2.1 cat masks_crypto.h
@@ -80,7 +81,7 @@ This pass is eventually the one instrumenting the source code with the masking.
     long long int * CRYPTO __attribute__((visibility("default"),weak)) = _DYNAMIC;
     extern long long int or_mask __attribute__((visibility("hidden")));
     ```
-    `exports_crypto.map` is a map which we use in order to export the symbol which points to the start address of the library. This is necessary for some of our relocations. **Note** that the necessity of this depends each time on the library's `Makefile`. Some export them by defualt, some others not. Hacking through the `Makefile` should always be a solution however many times this is not trivial. Also note that some libraries create the symbol map long before calling `make` so a user can modify this map as well. In our example:
+    `exports_crypto.map` is a map which we use in order to export the symbol which points to the start address of the library. This is necessary for some of our relocations. **Note** that the necessity of this depends each time on the library's `Makefile`. Some export them by default, some others not. Hacking through the `Makefile` should always be a solution however many times this is not trivial. Also note that some libraries create the symbol map long before calling `make` so a user can modify this map as well. In our example:
     ```bash
     ➜  openssl-3.2.1 cat exports_crypto.map
     {
@@ -90,7 +91,7 @@ This pass is eventually the one instrumenting the source code with the masking.
         *;
     };
     ```
-- After this we run the `callback_parser.py` script in which we give a lot of input files.
+- After this we run the `callback_parser.py` script (details in the *scripts* folder) in which we give a lot of input files.
     ```bash
     python3 ~/path/to/platypus/scripts/callback_parser.py \
     libraries_crypto.json \
@@ -175,19 +176,16 @@ This pass is eventually the one instrumenting the source code with the masking.
 
 
 After all of the above a fast way to see if the library has been compiled and linked with PlaTypus is executing `llvm-readelf -rW` in the binary and searching for relocations like `ORMASK` and `ANDMASK`.
-```bash
 
-```
 
 ### Test cases
 
 For the most important libraries used in our benchmarks we provide specific bash scripts automating the whole process.
 
-**Note** that to enable automation we provide for each library in its folder the following:
-1. If needed, the file which is the argument to `callb_getter` linker option (previously `a.txt`). This can also be verified by our `parse_output.py` script.
+**Note** that to enable automation we provide for each library (in its folder) the following:
+1. If needed, the file which is the argument to `callb_getter` linker option (previously `a.txt`). This can also be produced by our `parse_output.py` script.
 2. The `masks.h` file declaring the symbol pointing to the start of the DSO.
 3. If needed an `exports.map` file which enforces that the symbol declared in `masks.h` is exported.
-4. The `libraries.json` dict. Currently we assume that every library after compilation is stored under `/opt/platypus`.
-5. The `dso_callbacks.cpp` file which holds information about the structs that need to be instrumented.
+4. The `dso_callbacks.cpp` file which holds information about the structs that need to be instrumented. This can also be reproduced.
 
 Ideally all the above should be automated.
