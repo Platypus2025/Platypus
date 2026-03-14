@@ -93,6 +93,9 @@ for dir in pcre2 libcrypt libevent libreadline openssl libz libtinfo libncurses;
     ./compile.sh
     cd ..
 done
+
+ln -s instrumented_libs/ld-linux-x86-64.so.2 ld.so
+
 cd ..
 
 

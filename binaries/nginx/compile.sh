@@ -6,7 +6,7 @@ URL="https://nginx.org/download/${TARBALL}"
 CLANG="/usr/bin/clang-20"
 LD_LLD="/usr/bin/ld.lld-20"
 LIBRARY_PATH_WITH_INSTRUMENTED="${ROOT_DIR}/libraries/instrumented_libs"
-DYNAMIC_LINKER="${LIBRARY_PATH_WITH_INSTRUMENTED}/ld-linux-x86-64.so.2"
+DYNAMIC_LINKER="${ROOT_DIR}/libraries/ld.so"
 
 PLATYPUS_CLANG="${ROOT_DIR}/llvm-project/build/bin/clang-20"
 PLATYPUS_LLD="${ROOT_DIR}/llvm-project/build/bin/ld.lld"
