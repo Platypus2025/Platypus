@@ -215,3 +215,159 @@ cp sqlite3 ../../artifact_binaries_instrumented
 # make sqlite3 -j"$(nproc)"
 
 # make TCL_CONFIG_SH=/usr/lib/x86_64-linux-gnu/tcl8.6/tclConfig.sh test -j8
+
+
+
+
+### Speedtest
+make clean
+make distclean
+BIN2="speedtest1"
+
+CC="${CLANG}" \
+CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
+LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now" \
+./configure
+
+echo "Building sqlite3..."
+bear -- make speedtest1 -j"$(nproc)"
+
+cp speedtest1 "${BIN_FOLDER_UNINSTRUMENTED}/"
+
+make clean
+
+LOGFILE_PATH="$PWD/dynsym_speedtest.log" \
+make "${BIN2}" \
+  CC="${PLATYPUS_CLANG} -g -fPIC -fpass-plugin=${DYNSYM_PLUGIN}" \
+  CFLAGS="-O3" \
+  LDFLAGS="-fuse-ld=lld -Wl,--allow-shlib-undefined" \
+  -j1
+
+
+make clean
+
+LOGFILE_PATH="$PWD/sym_speedtest.log" make "${BIN2}" \
+  CC="${PLATYPUS_CLANG}" \
+  CFLAGS="-O3 -g -fpass-plugin=${STRUCT_PLUGIN}" \
+  LDFLAGS="-fuse-ld=lld -Wl,--allow-shlib-undefined" \
+  -j8
+
+make clean
+
+
+cp ../../dso_callbacks.cpp "${ROOT_DIR}/dso_callbacks.cpp"
+cp ../../BitMasks.cpp "${ROOT_DIR}/llvm-passes/BitMasks/BitMasks.cpp"
+OLD_DIR="$PWD"
+cd "${ROOT_DIR}/llvm-passes/BitMasks/build"
+make -j8
+cd "$OLD_DIR"
+
+make clean
+make distclean
+
+
+export PATH="${LLVM_ROOT}/build/bin:$PATH"
+
+cat > ../libraries_speedtest.json <<EOF
+{
+    "${ROOT_DIR}/libraries/instrumented_libs/libz.so.1.3.1": "LIBZ",
+    "${ROOT_DIR}/libraries/instrumented_libs/libc.so.6": "LIBC",
+    "${ROOT_DIR}/libraries/instrumented_libs/ld-linux-x86-64.so.2": "LD"
+}
+EOF
+
+
+
+CC="${PLATYPUS_CLANG}" \
+CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
+LDFLAGS="-fuse-ld=${PLATYPUS_LLD} -Wl,-z,relro,-z,now" \
+./configure
+
+
+PROTECT_JMP=True make "${BIN2}" \
+  CC="${PLATYPUS_CLANG} \
+      -g -O3 -fPIC \
+      -fcf-protection=full \
+      -fpass-plugin=${MASK_PLUGIN} \
+      -fuse-ld=lld \
+      -rdynamic \
+      -Wl,-z,relro,-z,now \
+      -Wl,--dynamic-linker=${DYNAMIC_LINKER} \
+      -Wl,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
+      -Wl,--allow-shlib-undefined" \
+  -j8
+
+touch reachable_structs
+
+python3 "$SCRIPT_1" \
+  ${PWD}/../libraries_speedtest.json \
+  dynsym_speedtest.log \
+  speedtest1 \
+  1 \
+  MB \
+  reachable_structs \
+  sym_speedtest.log \
+  > output.txt
+
+python3 "$SCRIPT_2" output.txt header_speedtest.txt bin
+sed -i '$ s/}/, '\''LIBZ'\'':[]}/' header_speedtest.txt
+cat "${ROOT_DIR}/libraries/libz/zlib-1.3.1/header.txt" >> header_speedtest.txt
+cat "${ROOT_DIR}/header.txt" >> header_speedtest.txt
+python3 "$SCRIPT_3" header_speedtest.txt fallthrough libm.so.6
+
+clang -c mask.c -fcf-protection=full
+
+rm speedtest1
+
+PROTECT_JMP=True make "${BIN2}" \
+  CC="${PLATYPUS_CLANG} \
+      -g -O3 -fPIC \
+      -fcf-protection=full \
+      -fpass-plugin=${MASK_PLUGIN} \
+      -fuse-ld=lld \
+      -rdynamic \
+      -Wl,-z,relro,-z,now \
+      -Wl,--dynamic-linker=${DYNAMIC_LINKER} \
+      -Wl,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
+      -Wl,--allow-shlib-undefined \
+      ${PWD}/mask.o" \
+  -j8
+
+
+
+python3 "$SCRIPT_1" \
+  ${PWD}/../libraries_speedtest.json \
+  dynsym_speedtest.log \
+  speedtest1 \
+  1 \
+  MB \
+  reachable_structs \
+  sym_speedtest.log \
+  > output.txt
+
+
+python3 "$SCRIPT_2" output.txt header_speedtest.txt bin
+sed -i '$ s/}/, '\''LIBZ'\'':[]}/' header_speedtest.txt
+cat "${ROOT_DIR}/libraries/libz/zlib-1.3.1/header.txt" >> header_speedtest.txt
+cat "${ROOT_DIR}/header.txt" >> header_speedtest.txt
+python3 "$SCRIPT_3" header_speedtest.txt fallthrough libm.so.6
+
+clang -c mask.c -fcf-protection=full
+
+rm speedtest1
+
+PROTECT_JMP=True make "${BIN2}" \
+  CC="${PLATYPUS_CLANG} \
+      -g -O3 -fPIC \
+      -fcf-protection=full \
+      -fpass-plugin=${MASK_PLUGIN} \
+      -fuse-ld=lld \
+      -rdynamic \
+      -Wl,-z,relro,-z,now \
+      -Wl,--dynamic-linker=${DYNAMIC_LINKER} \
+      -Wl,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED} \
+      -Wl,--allow-shlib-undefined \
+      ${PWD}/mask.o" \
+  -j8
+
+cp speedtest1 ../../artifact_binaries_instrumented

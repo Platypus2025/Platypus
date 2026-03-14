@@ -119,7 +119,7 @@ cp /lib/x86_64-linux-gnu/libm.so* ./libraries/artifact_libs_uninstrumented/
 # Compile binaries
 cd binaries
 
-for dir in bftpd redis nginx sqlite memcached lighttpd; do
+for dir in bftpd redis nginx memcached lighttpd sqlite; do
     cd "$dir"
     chmod +x compile.sh
     ./compile.sh
