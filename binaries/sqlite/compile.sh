@@ -5,8 +5,8 @@ SRC_DIR="sqlite-src-${SQLITE_VERSION}"
 ZIPFILE="${SRC_DIR}.zip"
 URL="https://www.sqlite.org/2025/${ZIPFILE}"
 
-CLANG="/usr/bin/clang-20"
-LD_LLD="/usr/bin/ld.lld-20"
+CLANG="clang"
+LD_LLD="lld"
 LIBRARY_PATH_WITH_INSTRUMENTED="${ROOT_DIR}/libraries/instrumented_libs"
 DYNAMIC_LINKER="${LIBRARY_PATH_WITH_INSTRUMENTED}/ld-linux-x86-64.so.2"
 

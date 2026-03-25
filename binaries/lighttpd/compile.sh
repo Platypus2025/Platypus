@@ -4,8 +4,8 @@ LIGHTTPD_VERSION="1.4.79"
 TARBALL="lighttpd-${LIGHTTPD_VERSION}.tar.gz"
 URL="https://download.lighttpd.net/lighttpd/releases-1.4.x/${TARBALL}"
 
-CLANG="/usr/bin/clang-20"
-LD_LLD="/usr/bin/ld.lld-20"
+CLANG="clang"
+LD_LLD="lld"
 LIBRARY_PATH_WITH_INSTRUMENTED="${ROOT_DIR}/libraries/instrumented_libs"
 DYNAMIC_LINKER="${LIBRARY_PATH_WITH_INSTRUMENTED}/ld-linux-x86-64.so.2"
 

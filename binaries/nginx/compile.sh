@@ -3,8 +3,8 @@ SRC_DIR="nginx-${NGINX_VERSION}"
 TARBALL="${SRC_DIR}.tar.gz"
 URL="https://nginx.org/download/${TARBALL}"
 
-CLANG="/usr/bin/clang-20"
-LD_LLD="/usr/bin/ld.lld-20"
+CLANG="clang"
+LD_LLD="lld"
 LIBRARY_PATH_WITH_INSTRUMENTED="${ROOT_DIR}/libraries/instrumented_libs"
 DYNAMIC_LINKER="${ROOT_DIR}/libraries/ld.so"
 

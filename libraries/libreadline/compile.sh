@@ -4,8 +4,8 @@ READLINE_VERSION="8.3"
 TARBALL="readline-${READLINE_VERSION}.tar.gz"
 URL="https://ftp.gnu.org/gnu/readline/${TARBALL}"
 
-CLANG="/usr/bin/clang-20"
-LD_LLD="/usr/bin/ld.lld-20"
+CLANG="clang"
+LD_LLD="lld"
 DYNAMIC_LINKER="${ROOT_DIR}/libraries/instrumented_libs/ld-linux-x86-64.so.2"
 
 PLATYPUS_CLANG="${ROOT_DIR}/llvm-project/build/bin/clang-20"
