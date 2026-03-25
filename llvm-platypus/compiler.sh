@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 if [ $# -lt 2 ]; then
     echo "Usage: $0 PATH_TO_PLATYPUS TARGET_DIR"
     exit 1
@@ -12,8 +14,14 @@ TARGET_DIR="$2"
 
 cd "$TARGET_DIR" || { echo "Failed to cd into $CLONE_DIR"; exit 1; }
 
+# Clone only if not already present
+if [ ! -d "llvm-project" ]; then
+    echo "Cloning llvm-project..."
+    git clone https://github.com/llvm/llvm-project.git
+else
+    echo "llvm-project already exists, skipping clone."
+fi
 
-git clone https://github.com/llvm/llvm-project.git
 
 cd llvm-project/
 
@@ -34,7 +42,7 @@ cp "${LLD_FILES}/Config.h" "${PATH_TO_LLVM}/lld/ELF/Config.h"
 cp "${LLD_FILES}/DriverUtils.cpp" "${PATH_TO_LLVM}/lld/ELF/DriverUtils.cpp"
 cp "${LLD_FILES}/InputFiles.cpp" "${PATH_TO_LLVM}/lld/ELF/InputFiles.cpp"
 cp "${LLD_FILES}/InputSection.cpp" "${PATH_TO_LLVM}/lld/ELF/InputSection.cpp"
-cp "${LLD_FILES}/LinkerScript.cpp" "${PATH_TO_LLVM}/lld/ELF/LinkerScript.cpp "
+cp "${LLD_FILES}/LinkerScript.cpp" "${PATH_TO_LLVM}/lld/ELF/LinkerScript.cpp"
 cp "${LLD_FILES}/MarkLive.cpp" "${PATH_TO_LLVM}/lld/ELF/MarkLive.cpp"
 cp "${LLD_FILES}/OutputSections.cpp" "${PATH_TO_LLVM}/lld/ELF/OutputSections.cpp"
 cp "${LLD_FILES}/Relocations.cpp" "${PATH_TO_LLVM}/lld/ELF/Relocations.cpp"
@@ -64,8 +72,8 @@ cd build
 
 cmake -G Ninja ../llvm \
     -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_ENABLE_PROJECTS="clang;lld;llvm" \
+    -DLLVM_ENABLE_PROJECTS="clang;lld" \
     -DLLVM_TARGETS_TO_BUILD="X86" \
     -DCMAKE_INSTALL_PREFIX="$PWD/../install"
 
-ninja -j8
+ninja -j"$(nproc)"

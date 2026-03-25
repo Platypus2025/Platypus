@@ -5,6 +5,8 @@ cd llvm-platypus
 
 # Run compile script
 ./compiler.sh "$PWD/../" "$PWD/../"
+chmod +x ./compiler_uninstrumented.sh
+./compiler_uninstrumented.sh "$PWD/../" "$PWD/../"
 
 cd ..
 
@@ -15,21 +17,24 @@ export ROOT_DIR=$PWD
 
 cd llvm-passes/LogStructs
 
-mkdir build && cd build
+mkdir -p build
+cd build
 
 cmake ../
 make -j"$(nproc)"
 
 cd ../../FindDynSym
 
-mkdir build && cd build
+mkdir -p build
+cd build
 
 cmake ../
 make -j"$(nproc)"
 
 cd ../../BitMasks
 
-mkdir build && cd build
+mkdir -p build
+cd build
 
 cmake ../
 make -j"$(nproc)"
@@ -94,7 +99,7 @@ for dir in pcre2 libcrypt libevent libreadline openssl libz libtinfo libncurses;
     cd ..
 done
 
-ln -s instrumented_libs/ld-linux-x86-64.so.2 ld.so
+ln -sf instrumented_libs/ld-linux-x86-64.so.2 ld.so
 
 cd ..
 
