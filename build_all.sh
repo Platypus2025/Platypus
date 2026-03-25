@@ -50,6 +50,8 @@ mkdir -p libraries/artifact_libs_uninstrumented
 mkdir -p binaries/artifact_binaries_uninstrumented
 mkdir -p binaries/artifact_binaries_instrumented
 
+export PATH="$PWD/llvm-project-uninstrumented/build/bin:$PATH"
+
 cd glibc-platypus
 chmod +x libc_build.sh
 ./libc_build.sh

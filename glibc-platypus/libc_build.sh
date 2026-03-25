@@ -8,7 +8,7 @@ cp dso_callbacks.cpp "${PWD}/../dso_callbacks.cpp"
 cp BitMasks.cpp "${ROOT_DIR}/llvm-passes/BitMasks/BitMasks.cpp"
 OLD_DIR="$PWD"
 cd "${ROOT_DIR}/llvm-passes/BitMasks/build"
-make -j8
+make -j$(nproc)
 cd "$OLD_DIR"
 
 FILE="stdlib/qsort.c"
@@ -35,7 +35,7 @@ chmod +x clang-wrapper.sh
 cp ../masks.h ./
 cp ../masks_ld.h ./
 
-make CC="$PWD/clang-wrapper.sh" -j8
+make CC="$PWD/clang-wrapper.sh" -j$(nproc)
 
 awk '/^[[:space:]]*global:[[:space:]]*$/ { print; print "    LIBC;"; next } { print }' \
     libc.map > libc.map.new
@@ -74,6 +74,6 @@ chmod +x clang-wrapper-uninstrumented.sh
 
 CC=clang ../configure --prefix=/a/path --disable-static --disable-docs --enable-cet
 
-make CC="$PWD/clang-wrapper-uninstrumented.sh" -j8
+make CC="$PWD/clang-wrapper-uninstrumented.sh" -j$(nproc)
 
 cd ..

@@ -128,7 +128,7 @@ if __name__ == "__main__":
     try:
         clean_args = get_compile_args(compile_commands_path, srcfile)
     except Exception as e:
-        print(f"[ERROR] {e}")
+        print(f"[INFO] {e}")
         sys.exit(2)
 
     tu = index.parse(srcfile, args=clean_args, options=clang.cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)

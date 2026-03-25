@@ -19,7 +19,7 @@ for arg in "$@"; do
 done
 
 
-RTLD="-O2 -g -fcf-protection=full -fPIC -fuse-ld=/usr/bin/ld.lld-20 -Wl,--allow-shlib-undefined -Wl,-z,nodefs,-z,relro,-z,now"
+RTLD="-O2 -g -fcf-protection=full -fPIC -fuse-ld=lld -Wl,--allow-shlib-undefined -Wl,-z,nodefs,-z,relro,-z,now"
 
 if [ "$HAS_LIBC" -eq 1 ]; then
     exec clang -Qunused-arguments $RTLD "$@"

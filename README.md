@@ -30,23 +30,7 @@ We suggest executing the `build_all.sh` script, which performs all steps except 
 
 ### Prerequisites
 
-The build pipeline depends on the following:
-
-```
-build-essential
-git
-cmake (>= 3.20)
-ninja-build
-python3 (tested with Python 3.12.3)
-clang-20
-libclang-20-dev (required by scripts/annotation.py)
-python3-clang-20 (Python bindings for libclang)
-libssl-dev
-zlib1g-dev
-bear
-```
-
-You can install them on your Ubuntu host with:
+The build pipeline depends on the following tools which you can install on your Ubuntu host with:
 
 ```
 sudo apt update
@@ -61,7 +45,22 @@ sudo apt install -y \
     python3-clang-20 \
     libssl-dev \
     zlib1g-dev \
-    bear
+    bear \
+    libevent-2.1-7 \
+    gawk \
+    libevent-dev \
+    autoconf \
+    automake \
+    libtool \
+    m4 \
+    pkg-config \
+    libpcre3-dev \
+    libpcre2-dev \
+    tcl \
+    libreadline-dev \
+    libncurses5-dev \
+    python3-pip \
+    bison
 ```
 
 
