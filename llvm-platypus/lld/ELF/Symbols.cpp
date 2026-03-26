@@ -199,7 +199,7 @@ uint64_t Symbol::getPltVA(Ctx &ctx) const {
   if (ctx.arg.emachine == EM_MIPS && isMicroMips(ctx))
     outVA |= 1;
   if (this->getName() == "puts") {
-    printf("HELLLLOOO\n");
+    printf("\n");
   }
   // printf("Name is %s\n", this->getName());
   // printf("SYmbol in Plt %lx %lx in %lx\n\n", getCorrectedPltIdx(ctx), getPltIdx(ctx), outVA);
