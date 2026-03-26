@@ -1,4 +1,4 @@
-# PlaTypus llvm passes
+# PLaTypus llvm passes
 
 To prepare each pass enter the corresponding directory and define the path to the compiler via setting the `LLVM_ROOT` variable.
 In case you want to use a different (clang) compiler toolchain, just change the paths inside the `CMakeLists.txt` of the corresponding pass.

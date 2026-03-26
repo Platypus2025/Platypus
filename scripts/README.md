@@ -1,4 +1,4 @@
-# PlaTypus Scripts
+# PLaTypus Scripts
 
 This folder contains the scripts required by our tool. The most important ones are the following.
 
