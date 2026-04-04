@@ -45,11 +45,15 @@ cd "bftpd"
 echo "Running configure..."
 CC="${CLANG}" \
 CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
-LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
+LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now" \
 ./configure
 
+make -j"$(nproc)"
+make clean
+
 echo "Building bftpd..."
-bear -- make -j"$(nproc)"
+bear -- make CC="${CLANG}" CFLAGS="-fPIC -O3 -g -fcf-protection=full -I. -DVERSION=\\\"6.3\\\"" \
+  LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" -j"$(nproc)"
 
 cp bftpd "${BIN_FOLDER_UNINSTRUMENTED}/"
 

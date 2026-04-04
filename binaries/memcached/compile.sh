@@ -44,11 +44,23 @@ cd "memcached-${MEMCACHED_VERSION}"
 echo "Running configure..."
 CC="${CLANG}" \
 CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
-LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
+LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now" \
 ./configure
 
-echo "Building memcached..."
 bear -- make memcached -j"$(nproc)"
+make clean
+
+echo "Building memcached..."
+make "${BIN}" \
+  CC=${CLANG} \
+  CFLAGS="-fPIC -g \
+          -O3 \
+          -fcf-protection=full" \
+  LDFLAGS="-fuse-ld=lld \
+           -Wl,-z,relro,-z,now \
+           -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} \
+           -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
+  -j8
 
 cp memcached "${BIN_FOLDER_UNINSTRUMENTED}/"
 

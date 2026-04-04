@@ -229,11 +229,22 @@ BIN2="speedtest1"
 
 CC="${CLANG}" \
 CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
-LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
+LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now" \
 ./configure
 
 echo "Building sqlite3..."
 bear -- make speedtest1 -j"$(nproc)"
+make clean
+
+make "${BIN2}" \
+  CC="${CLANG} \
+      -g -O3 -fPIC \
+      -fcf-protection=full \
+      -fuse-ld=lld \
+      -Wl,-z,relro,-z,now \
+      -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} \
+      -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
+      -j8
 
 cp speedtest1 "${BIN_FOLDER_UNINSTRUMENTED}/"
 
