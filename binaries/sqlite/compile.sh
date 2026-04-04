@@ -10,6 +10,9 @@ LD_LLD="lld"
 LIBRARY_PATH_WITH_INSTRUMENTED="${ROOT_DIR}/libraries/instrumented_libs"
 DYNAMIC_LINKER="${LIBRARY_PATH_WITH_INSTRUMENTED}/ld-linux-x86-64.so.2"
 
+LIBRARY_PATH_WITH_UNINSTRUMENTED="${ROOT_DIR}/libraries/artifact_libs_uninstrumented"
+DYNAMIC_LINKER_UNINSTRUMENTED="${LIBRARY_PATH_WITH_UNINSTRUMENTED}/ld-linux-x86-64.so.2"
+
 PLATYPUS_CLANG="${ROOT_DIR}/llvm-project/build/bin/clang-20"
 PLATYPUS_LLD="${ROOT_DIR}/llvm-project/build/bin/ld.lld"
 DYNSYM_PLUGIN="${ROOT_DIR}/llvm-passes/FindDynSym/build/libDynsym.so"
@@ -226,7 +229,7 @@ BIN2="speedtest1"
 
 CC="${CLANG}" \
 CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
-LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now" \
+LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
 ./configure
 
 echo "Building sqlite3..."
@@ -263,7 +266,6 @@ make -j8
 cd "$OLD_DIR"
 
 make clean
-make distclean
 
 
 export PATH="${LLVM_ROOT}/build/bin:$PATH"
@@ -275,13 +277,6 @@ cat > ../libraries_speedtest.json <<EOF
     "${ROOT_DIR}/libraries/instrumented_libs/ld-linux-x86-64.so.2": "LD"
 }
 EOF
-
-
-
-CC="${PLATYPUS_CLANG}" \
-CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
-LDFLAGS="-fuse-ld=${PLATYPUS_LLD} -Wl,-z,relro,-z,now" \
-./configure
 
 
 PROTECT_JMP=True make "${BIN2}" \
@@ -313,7 +308,7 @@ python3 "$SCRIPT_2" output.txt header_speedtest.txt bin
 sed -i '$ s/}/, '\''LIBZ'\'':[]}/' header_speedtest.txt
 cat "${ROOT_DIR}/libraries/libz/zlib-1.3.1/header.txt" >> header_speedtest.txt
 cat "${ROOT_DIR}/header.txt" >> header_speedtest.txt
-python3 "$SCRIPT_3" header_speedtest.txt fallthrough libm.so.6
+python3 "$SCRIPT_3" header_speedtest.txt
 
 clang -c mask.c -fcf-protection=full
 
@@ -350,7 +345,7 @@ python3 "$SCRIPT_2" output.txt header_speedtest.txt bin
 sed -i '$ s/}/, '\''LIBZ'\'':[]}/' header_speedtest.txt
 cat "${ROOT_DIR}/libraries/libz/zlib-1.3.1/header.txt" >> header_speedtest.txt
 cat "${ROOT_DIR}/header.txt" >> header_speedtest.txt
-python3 "$SCRIPT_3" header_speedtest.txt fallthrough libm.so.6
+python3 "$SCRIPT_3" header_speedtest.txt
 
 clang -c mask.c -fcf-protection=full
 

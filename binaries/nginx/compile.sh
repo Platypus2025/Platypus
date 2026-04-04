@@ -8,6 +8,9 @@ LD_LLD="lld"
 LIBRARY_PATH_WITH_INSTRUMENTED="${ROOT_DIR}/libraries/instrumented_libs"
 DYNAMIC_LINKER="${ROOT_DIR}/libraries/ld.so"
 
+LIBRARY_PATH_WITH_UNINSTRUMENTED="${ROOT_DIR}/libraries/artifact_libs_uninstrumented"
+DYNAMIC_LINKER_UNINSTRUMENTED="${LIBRARY_PATH_WITH_UNINSTRUMENTED}/ld-linux-x86-64.so.2"
+
 PLATYPUS_CLANG="${ROOT_DIR}/llvm-project/build/bin/clang-20"
 PLATYPUS_LLD="${ROOT_DIR}/llvm-project/build/bin/ld.lld"
 DYNSYM_PLUGIN="${ROOT_DIR}/llvm-passes/FindDynSym/build/libDynsym.so"
@@ -37,7 +40,7 @@ cd "${SRC_DIR}"
 echo "Running configure..."
 CC="${CLANG}" \
 CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
-LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now" \
+LDFLAGS="-fuse-ld=${LD_LLD} -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
 ./configure \
     --prefix=/usr/local/nginx \
     --with-http_ssl_module \

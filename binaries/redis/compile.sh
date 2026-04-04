@@ -10,6 +10,9 @@ LD_LLD="lld"
 LIBRARY_PATH_WITH_INSTRUMENTED="${ROOT_DIR}/libraries/instrumented_libs"
 DYNAMIC_LINKER="${LIBRARY_PATH_WITH_INSTRUMENTED}/ld-linux-x86-64.so.2"
 
+LIBRARY_PATH_WITH_UNINSTRUMENTED="${ROOT_DIR}/libraries/artifact_libs_uninstrumented"
+DYNAMIC_LINKER_UNINSTRUMENTED="${LIBRARY_PATH_WITH_UNINSTRUMENTED}/ld-linux-x86-64.so.2"
+
 PLATYPUS_CLANG="${ROOT_DIR}/llvm-project/build/bin/clang-20"
 PLATYPUS_CLANGXX="${ROOT_DIR}/llvm-project/build/bin/clang++"
 PLATYPUS_LLD="${ROOT_DIR}/llvm-project/build/bin/ld.lld"
@@ -46,9 +49,10 @@ echo "Building Redis..."
 bear -- make -j"$(nproc)" \
   CC="${CLANG}" \
   CXX="${CLANGXX}" \
+  OPT="-O3" \
   CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
   CXXFLAGS="-fPIC -O3 -g -fcf-protection=full" \
-  LDFLAGS="-fuse-ld=lld -Wl,-z,relro,-z,now" \
+  LDFLAGS="-fuse-ld=lld -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
   MALLOC=libc \
   USE_SYSTEMD=no
 
@@ -103,7 +107,7 @@ EOF
 PROTECT_JMP=True make USE_SYSTEMD=no MALLOC=libc "${BIN}" \
   CC="${PLATYPUS_CLANG}" \
   CXX="${PLATYPUS_CLANGXX}" \
-  OPT="-O3 -fno-omit-frame-pointer" \
+  OPT="-O3" \
   CFLAGS="-fPIC -g \
           -O3 \
           -fcf-protection=full \
@@ -137,8 +141,7 @@ python3 "$SCRIPT_2" output.txt header.txt bin
 
 cat "${ROOT_DIR}/header.txt" >> header.txt
 
-python3 "$SCRIPT_3" header.txt placeholder1__nss_mdns4_minimal_gethostbyname4_r fallthrough libgcc_s.so.1 libnss_mdns4_minimal.so.2 libstdc++.so.6 libm.so.6 \
-  libc_fallthrough \
+python3 "$SCRIPT_3" header.txt placeholder1__nss_mdns4_minimal_gethostbyname4_r libc_fallthrough \
     libstdc++.so.6 \
     libgcc_s.so.1
 
@@ -150,7 +153,7 @@ rm src/redis-server
 PROTECT_JMP=True make USE_SYSTEMD=no MALLOC=libc "${BIN}" \
   CC="${PLATYPUS_CLANG}" \
   CXX="${PLATYPUS_CLANGXX}" \
-  OPT="-O3 -fno-omit-frame-pointer" \
+  OPT="-O3" \
   CFLAGS="-fPIC -g \
           -O3 \
           -fcf-protection=full \
@@ -189,8 +192,7 @@ python3 "$SCRIPT_2" output.txt header.txt bin
 
 cat "${ROOT_DIR}/header.txt" >> header.txt
 
-python3 "$SCRIPT_3" header.txt placeholder1__nss_mdns4_minimal_gethostbyname4_r fallthrough libgcc_s.so.1 libnss_mdns4_minimal.so.2 libstdc++.so.6 libm.so.6 \
-  libc_fallthrough \
+python3 "$SCRIPT_3" header.txt placeholder1__nss_mdns4_minimal_gethostbyname4_r libc_fallthrough \
     libstdc++.so.6 \
     libgcc_s.so.1
 
@@ -237,8 +239,7 @@ python3 "$SCRIPT_2" output.txt header.txt bin
 
 cat "${ROOT_DIR}/header.txt" >> header.txt
 
-python3 "$SCRIPT_3" header.txt placeholder1__nss_mdns4_minimal_gethostbyname4_r fallthrough libgcc_s.so.1 libnss_mdns4_minimal.so.2 libstdc++.so.6 libm.so.6 \
-  libc_fallthrough \
+python3 "$SCRIPT_3" header.txt placeholder1__nss_mdns4_minimal_gethostbyname4_r libc_fallthrough \
     libstdc++.so.6 \
     libgcc_s.so.1
 

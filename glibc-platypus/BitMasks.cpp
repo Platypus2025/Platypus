@@ -147,7 +147,7 @@ struct BitmasksAddition : public PassInfoMixin<BitmasksAddition> {
         }
 
 
-        if (std::getenv("LOADER") && M.getSourceFileName().find("dl-call_fini") == std::string::npos) {
+        if (std::getenv("LOADER")) {
             // const char *l = std::getenv("LOADER");
             // if (l) {
             //     llvm::errs() << "LOADER env is set to: " << l << "\n";
