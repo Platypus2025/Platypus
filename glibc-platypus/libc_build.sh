@@ -45,8 +45,6 @@ sed -i '/GLIBC_PRIVATE {/,/local:/ s/global:/global:\n    LOD;/' ld.map
 
 make CC="$PWD/clang-wrapper.sh" -j8
 
-export PATH="${PATH#*:}"
-
 cd ..
 
 FILE="stdlib/qsort.c"
@@ -65,6 +63,28 @@ done
 
 mv "$tmp" "$FILE"
 
+cp dso_callbacks_libm.cpp "${PWD}/../dso_callbacks.cpp"
+cp BitMasks.cpp "${ROOT_DIR}/llvm-passes/BitMasks/BitMasks.cpp"
+OLD_DIR="$PWD"
+cd "${ROOT_DIR}/llvm-passes/BitMasks/build"
+make -j$(nproc)
+cd "$OLD_DIR"
+
+mkdir -p build-libm
+cd build-libm
+
+CC=clang ../configure --prefix=/opt --disable-static --disable-docs --enable-cet
+cp ../clang-wrapper_libm.sh .
+chmod +x clang-wrapper_libm.sh
+
+cp ../masks_libm.h ./
+
+make CC="$PWD/clang-wrapper_libm.sh" -j$(nproc)
+cd ..
+
+
+export PATH="${PATH#*:}"
+
 
 mkdir -p build-uninstrumented
 cd build-uninstrumented
@@ -72,7 +92,7 @@ cd build-uninstrumented
 cp ../clang-wrapper-uninstrumented.sh ./
 chmod +x clang-wrapper-uninstrumented.sh
 
-CC=clang ../configure --prefix=/a/path --disable-static --disable-docs --enable-cet
+CC=clang ../configure --prefix=/opt --disable-static --disable-docs --enable-cet
 
 make CC="$PWD/clang-wrapper-uninstrumented.sh" -j$(nproc)
 

@@ -8,6 +8,8 @@ BIN_DIR="$ROOT_DIR/binaries/artifact_binaries_instrumented"
 LIB_INST="$ROOT_DIR/libraries/instrumented_libs"
 LIB_UNINST="$ROOT_DIR/libraries/artifact_libs_uninstrumented"
 
+export PATH="$ROOT_DIR/llvm-project/build/bin:$PATH"
+
 echo "===== REDIS ====="
 python3 sec.py \
   "$BIN_DIR/redis-server" \
