@@ -9,7 +9,7 @@ Follow the steps:
     make -j8
     ```
 - Inside `wrk` place the script `lighttpd.py`.
-- In a directory of your choice in which **you have placed both the mitigated and the unmitigated versions** of `lighttpd`, place also the `lighttpd.conf`.
+- In a directory of your choice in which **you have placed the version (mitigated or unmitigated)** of `lighttpd` you want to evaluate, place also the `lighttpd.conf`.
 - Run:
     ```bash
     mkdir server

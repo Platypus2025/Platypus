@@ -9,7 +9,7 @@ Follow the steps:
     python3 -m pip install --user pyasynchat
     ```
 - Inside `pyftpdlib/scripts` place the script `bftpd.py`.
-- In a directory of your choice in which **you have placed both the mitigated and the unmitigated verions** of `bftpd`, place the `bftpd.conf` as well.
+- In a directory of your choice in which **you have placed the version (mitigated or unmitigated)** of `bftpd` you want to evaluate, place the `bftpd.conf` as well.
 
 
 - Then run:

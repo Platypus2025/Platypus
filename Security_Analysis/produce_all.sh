@@ -22,7 +22,7 @@ echo
 echo "===== SQLITE ====="
 python3 sec.py \
   "$BIN_DIR/sqlite3" \
-  "$ROOT_DIR/binaries/sqlite/sqlite-src-3500400/header_sqlite3.txt" \
+  "$ROOT_DIR/binaries/sqlite/sqlite-src-3500400/header_sqlite.txt" \
   "$LIB_INST" \
   "$LIB_UNINST"
 

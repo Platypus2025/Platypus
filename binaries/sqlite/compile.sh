@@ -208,6 +208,40 @@ PROTECT_JMP=True make "${BIN}" \
 
 cp sqlite3 ../../artifact_binaries_instrumented
 
+
+cat > ../libraries_tmp.json <<EOF
+{
+    "${ROOT_DIR}/libraries/instrumented_libs/libm.so.6": "LIBM",
+    "${ROOT_DIR}/libraries/instrumented_libs/libncurses.so.6.3": "CURS",
+    "${ROOT_DIR}/libraries/instrumented_libs/libtinfo.so.6.3": "INFO",
+    "${ROOT_DIR}/libraries/instrumented_libs/libreadline.so.8.3": "READ",
+    "${ROOT_DIR}/libraries/instrumented_libs/libz.so.1.3.1": "LIBZ",
+    "${ROOT_DIR}/libraries/instrumented_libs/libc.so.6": "LIBC",
+    "${ROOT_DIR}/libraries/instrumented_libs/ld-linux-x86-64.so.2": "LD"
+}
+EOF
+
+python3 "$SCRIPT_1" \
+  ${PWD}/../libraries_tmp.json \
+  dynsym.log \
+  sqlite3 \
+  1 \
+  MB \
+  reachable_structs \
+  sym.log \
+  > output.txt
+
+python3 "$SCRIPT_2" output.txt header_sqlite.txt bin
+sed -i '$ s/}/, '\''LIBZ'\'':[], '\''INFO'\'':[], '\''CURS'\'':[]}/' header_sqlite.txt
+cat "${ROOT_DIR}/libraries/libz/zlib-1.3.1/header.txt" >> header_sqlite.txt
+cat "${ROOT_DIR}/libraries/libncurses/ncurses-6.3/header_ncurses.txt" >> header_sqlite.txt
+cat "${ROOT_DIR}/libraries/libtinfo/tinfo/header_tinfo.txt" >> header_sqlite.txt
+cat "${ROOT_DIR}/libraries/libreadline/readline-8.3/header.txt" >> header_sqlite.txt
+cat "${ROOT_DIR}/header.txt" >> header_sqlite.txt
+python3 "$SCRIPT_3" header_sqlite.txt
+
+rm ../libraries_tmp.json
+
 # make clean
 # make distclean
 # CC="${CLANG}" \

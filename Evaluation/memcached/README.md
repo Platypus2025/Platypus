@@ -12,7 +12,7 @@ Follow the steps:
     make
     ```
 - Inside the `memtier_benchmark` dir place the script `memcached.py`.
-- In a directory of your choice in which **you have placed both the mitigated and the unmitigated versions** of `memcached` run:
+- In a directory of your choice in which **you have placed the version (mitigated or unmitigated)** of `memcached` you want to evaluate, run:
     ```bash
     taskset -c 0-3 ./memcached -p 11211 -m 1024 -t 4 -o hashpower=22
     ```

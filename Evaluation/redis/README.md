@@ -12,7 +12,7 @@ Follow the steps:
     make
     ```
 - Inside the `memtier_benchmark` dir place the script `redis.py`.
-- In a directory of your choice in which **you have placed both the mitigated and the unmitigated versions** of `redis-server` run:
+- In a directory of your choice in which **you have placed the version (mitigated or unmitigated)** of `redis-server` you want to evaluate, run:
     ```bash
     export LC_ALL=C
     export LANG=C

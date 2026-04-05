@@ -103,7 +103,16 @@ done
 
 ln -sf instrumented_libs/ld-linux-x86-64.so.2 ld.so
 
-cd ..
+cd artifact_libs_uninstrumented
+ln -sfn libcrypt.so.1.1.0       libcrypt.so.1
+ln -sfn libevent-2.1.so.7.0.1   libevent-2.1.so.7
+ln -sfn libncurses.so.6.3       libncurses.so.6
+ln -sfn libpcre2-8.so.0.12.0    libpcre2-8.so.0
+ln -sfn libreadline.so.8.3      libreadline.so.8
+ln -sfn libtinfo.so.6.3         libtinfo.so.6
+ln -sfn libz.so.1.3.1           libz.so.1
+
+cd ../..
 
 
 cp /lib/x86_64-linux-gnu/libcap.so* ./libraries/instrumented_libs/

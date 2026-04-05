@@ -9,7 +9,7 @@ Follow the steps:
     make -j8
     ```
 - Inside `wrk` place the script `nginx.py`.
-- In a directory of your choice in which **you have placed both the mitigated and the unmitigated versions** of `nginx` run the `set.sh`. You need to place the shell script int he directory as well.
+- In a directory of your choice in which **you have placed the version (mitigated or unmitigated)** of `nginx` you want to evaluate, run the `set.sh`. You need to place the shell script in the directory as well.
 - Place the `nginx.conf` in the created `server` folder.
 - After the above, do (from the directory you have placed the nginx binaries):
     ```bash

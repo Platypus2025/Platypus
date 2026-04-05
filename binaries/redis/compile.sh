@@ -52,7 +52,7 @@ bear -- make -j"$(nproc)" \
   OPT="-O3" \
   CFLAGS="-fPIC -O3 -g -fcf-protection=full" \
   CXXFLAGS="-fPIC -O3 -g -fcf-protection=full" \
-  LDFLAGS="-fuse-ld=lld -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,-rpath,${LIBRARY_PATH_WITH_UNINSTRUMENTED}" \
+  LDFLAGS="-fuse-ld=lld -Wl,-z,relro,-z,now -Wl,--dynamic-linker=${DYNAMIC_LINKER_UNINSTRUMENTED} -Wl,--disable-new-dtags,-rpath,${LIBRARY_PATH_WITH_INSTRUMENTED}" \
   MALLOC=libc \
   USE_SYSTEMD=no
 

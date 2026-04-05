@@ -105,6 +105,8 @@ def lib_to_tag(name):
         return "CURS"
     if base.startswith("libtinfo.so"):
         return "INFO"
+    if base.startswith("libm.so"):
+        return "LIBM"
 
     return None
 
