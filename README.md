@@ -81,7 +81,7 @@ Since the exact set of installed libraries may vary depending on the system conf
 /lib/x86_64-linux-gnu/libgcc_s.so*
 /lib/x86_64-linux-gnu/libm.so*
 ```
-If any of these paths is empty, the library may exist in a different location on the system. However, they are required for the binaries to function properly.
+If any of these paths is empty, the library may exist in a different location on the system. However, they are required for the binaries to function properly. Again, we emphasize that the above seven libraries are not instrumented, and their uninstrumented versions are used in the benchmarks.
 
 Additionally, `scripts/annotation.py` assumes that the file `/usr/lib/llvm-20/lib/libclang-20.so.1` exists on the system. Although this should be the case after `sudo apt install libclang-20-dev python3-clang-20`, please verify it beforehand, as the path is currently hardcoded in the Python script.
 

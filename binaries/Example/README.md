@@ -84,7 +84,7 @@ python3 ../../scripts/parse_output.py output.txt header.txt bin
 ```bash
 cat "${ROOT_DIR}/header.txt" >> header.txt
 ```
-These three commands create the necessary metadata files to be parsed so that the correct stub files related to callback tables can be generated.
+These three commands create the necessary metadata files to be parsed so that the correct stub files related to callback tables can be generated. Note that the last command supplements the metadata with the callbacks from libc. If the main binary uses additional libraries, their corresponding `header.txt` files should be included as well.
 ```bash
 python3 ../../scripts/create_header.py header.txt
 ```
